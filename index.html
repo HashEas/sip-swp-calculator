@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP + SWP Goal Planner | Plan Your Financial Freedom</title>
+    <meta name="description" content="Calculate how much to invest monthly via SIP to achieve your future monthly income goal through SWP. Accounts for inflation, step-up, and compounding.">
+    <meta name="keywords" content="SIP calculator, SWP calculator, retirement planning, mutual fund, financial freedom, inflation adjusted">
+    <meta property="og:title" content="SIP + SWP Goal Planner">
+    <meta property="og:description" content="Plan your investments today to fund your future monthly income goals. Real-time calculator with inflation adjustment.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#5367ff">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%235367ff'/><text x='50' y='68' font-size='45' text-anchor='middle' fill='white' font-family='system-ui' font-weight='bold'>SP</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #5367ff, #00d09c);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-weight: 700; font-size: 14px;
+        }
+        .header h1 { font-size: 1.1rem; font-weight: 600; color: #1f1f2e; }
+        .header p { font-size: 0.78rem; color: #777; margin-top: 1px; }
+
+        .main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+
+        .calculator {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+
+        .inputs-panel {
+            padding: 28px 28px 20px;
+            border-right: 1px solid #f0f0f0;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .results-panel { padding: 28px; background: #fafbff; }
+
+        .slider-group { margin-bottom: 20px; }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .slider-label { font-size: 0.82rem; color: #555; font-weight: 500; }
+        .slider-value-box {
+            background: #eef7f0;
+            border: 1.5px solid #00d09c;
+            border-radius: 6px;
+            padding: 3px 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #00d09c;
+            min-width: 70px;
+            text-align: center;
+        }
+        .slider-value-box.blue { background: #eef0ff; border-color: #5367ff; color: #5367ff; }
+        .slider-value-box.orange { background: #fff5eb; border-color: #ff8a00; color: #ff8a00; }
+        .slider-value-box.purple { background: #f5eeff; border-color: #7c3aed; color: #7c3aed; }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: #e8e8e8;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #5367ff;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 4px rgba(83,103,255,0.4);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.2); }
+        input[type="range"].green::-webkit-slider-thumb { background: #00d09c; box-shadow: 0 1px 4px rgba(0,208,156,0.4); }
+        input[type="range"].orange::-webkit-slider-thumb { background: #ff8a00; box-shadow: 0 1px 4px rgba(255,138,0,0.4); }
+        input[type="range"].purple::-webkit-slider-thumb { background: #7c3aed; box-shadow: 0 1px 4px rgba(124,58,237,0.4); }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #5367ff;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 4px rgba(83,103,255,0.4);
+            cursor: pointer;
+        }
+
+        .slider-range {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: #bbb;
+            margin-top: 3px;
+        }
+
+        .section-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 14px;
+            margin-top: 6px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f0f0f0;
+            font-weight: 600;
+        }
+
+        .donut-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .donut-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .donut-center .amount { font-size: 1.1rem; font-weight: 700; color: #1f1f2e; }
+        .donut-center .label { font-size: 0.68rem; color: #999; }
+
+        .result-items { display: flex; flex-direction: column; gap: 12px; }
+        .result-item { display: flex; align-items: center; gap: 10px; }
+        .result-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .result-info { flex: 1; }
+        .result-info .label { font-size: 0.75rem; color: #777; }
+        .result-info .value { font-size: 0.95rem; font-weight: 600; color: #1f1f2e; }
+
+        .divider { height: 1px; background: #f0f0f0; margin: 18px 0; }
+
+        .highlight-card {
+            background: linear-gradient(135deg, #5367ff, #00d09c);
+            border-radius: 12px;
+            padding: 18px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .highlight-card .big { font-size: 1.6rem; font-weight: 700; }
+        .highlight-card .sub { font-size: 0.75rem; opacity: 0.9; margin-top: 3px; }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .stat-box {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-box .val { font-size: 0.9rem; font-weight: 700; color: #5367ff; }
+        .stat-box .lbl { font-size: 0.65rem; color: #888; margin-top: 2px; }
+
+        .schedule-section {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin-top: 24px;
+            overflow: hidden;
+        }
+        .schedule-tabs { display: flex; border-bottom: 1px solid #f0f0f0; }
+        .schedule-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .schedule-tab:hover { color: #5367ff; background: #fafbff; }
+        .schedule-tab.active { color: #5367ff; border-bottom-color: #5367ff; background: #fafbff; }
+        .schedule-content { padding: 16px; display: none; }
+        .schedule-content.active { display: block; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th {
+            text-align: left; padding: 8px 10px;
+            color: #888; font-weight: 500; font-size: 0.72rem;
+            text-transform: uppercase; border-bottom: 1px solid #f0f0f0;
+            position: sticky; top: 0; background: #fff;
+        }
+        td { padding: 8px 10px; border-bottom: 1px solid #f8f8f8; color: #444; }
+        tr:hover td { background: #fafbff; }
+        .table-wrap { max-height: 400px; overflow-y: auto; }
+
+        .chart-section { padding: 16px; }
+        .chart-section canvas { width: 100%; height: 220px; }
+
+        .footer-note {
+            text-align: center; font-size: 0.72rem;
+            color: #aaa; margin-top: 20px; padding: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator { grid-template-columns: 1fr; }
+            .inputs-panel { max-height: none; border-right: none; border-bottom: 1px solid #f0f0f0; }
+            .header { padding: 12px 16px; }
+            .header h1 { font-size: 0.95rem; }
+            .highlight-card .big { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-icon">SP</div>
+        <div>
+            <h1>SIP + SWP Goal Planner</h1>
+            <p>How much to invest monthly to achieve your future income goal</p>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="calculator">
+            <div class="inputs-panel">
+                <div class="section-title">Your Goal</div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Monthly Income Goal (today's value)</span>
+                        <span class="slider-value-box" id="disp-monthlyGoal"></span>
+                    </div>
+                    <input type="range" class="green" id="monthlyGoal" min="10000" max="1000000" step="5000" value="100000" oninput="recalc()">
+                    <div class="slider-range"><span>₹10K</span><span>₹10L</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Goal Start Year</span>
+                        <span class="slider-value-box blue" id="disp-goalStartYear"></span>
+                    </div>
+                    <input type="range" id="goalStartYear" min="2030" max="2060" step="1" value="2045" oninput="recalc()">
+                    <div class="slider-range"><span>2030</span><span>2060</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Withdrawal Duration</span>
+                        <span class="slider-value-box orange" id="disp-swpDuration"></span>
+                    </div>
+                    <input type="range" class="orange" id="swpDurationYears" min="5" max="40" step="1" value="25" oninput="recalc()">
+                    <div class="slider-range"><span>5 yrs</span><span>40 yrs</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Existing Corpus</span>
+                        <span class="slider-value-box purple" id="disp-existingCorpus"></span>
+                    </div>
+                    <input type="range" class="purple" id="existingCorpus" min="0" max="10000000" step="50000" value="0" oninput="recalc()">
+                    <div class="slider-range"><span>₹0</span><span>₹1 Cr</span></div>
+                </div>
+
+                <div class="section-title">Assumptions</div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Inflation Rate</span>
+                        <span class="slider-value-box" id="disp-inflation"></span>
+                    </div>
+                    <input type="range" class="green" id="inflationRate" min="3" max="12" step="0.5" value="6" oninput="recalc()">
+                    <div class="slider-range"><span>3%</span><span>12%</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">SIP Return (Equity)</span>
+                        <span class="slider-value-box blue" id="disp-sipReturn"></span>
+                    </div>
+                    <input type="range" id="sipReturnRate" min="6" max="20" step="0.5" value="12" oninput="recalc()">
+                    <div class="slider-range"><span>6%</span><span>20%</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">SWP Return (Balanced)</span>
+                        <span class="slider-value-box orange" id="disp-swpReturn"></span>
+                    </div>
+                    <input type="range" class="orange" id="swpReturnRate" min="4" max="14" step="0.5" value="8" oninput="recalc()">
+                    <div class="slider-range"><span>4%</span><span>14%</span></div>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <span class="slider-label">Annual SIP Step-up</span>
+                        <span class="slider-value-box purple" id="disp-stepUp"></span>
+                    </div>
+                    <input type="range" class="purple" id="annualStepUp" min="0" max="30" step="1" value="10" oninput="recalc()">
+                    <div class="slider-range"><span>0%</span><span>30%</span></div>
+                </div>
+            </div>
+
+            <div class="results-panel">
+                <div class="highlight-card">
+                    <div class="big" id="resultSip">-</div>
+                    <div class="sub">Start Monthly SIP (increases <span id="stepUpPct">10</span>% every year)</div>
+                </div>
+
+                <div class="donut-container">
+                    <canvas id="donutChart" width="200" height="200"></canvas>
+                    <div class="donut-center">
+                        <div class="amount" id="donutCenter">-</div>
+                        <div class="label">Corpus Needed</div>
+                    </div>
+                </div>
+
+                <div class="result-items">
+                    <div class="result-item">
+                        <div class="result-dot" style="background:#00d09c"></div>
+                        <div class="result-info">
+                            <div class="label">Total Amount You Invest</div>
+                            <div class="value" id="rInvested">-</div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-dot" style="background:#5367ff"></div>
+                        <div class="result-info">
+                            <div class="label">Wealth Gain (Returns)</div>
+                            <div class="value" id="rGain">-</div>
+                        </div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-dot" style="background:#ff8a00"></div>
+                        <div class="result-info">
+                            <div class="label">Total Withdrawals (SWP)</div>
+                            <div class="value" id="rWithdrawn">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="val" id="rInflGoal">-</div>
+                        <div class="lbl">Monthly Income at Goal Year</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val" id="rMultiplier">-</div>
+                        <div class="lbl">Wealth Multiplier</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val" id="rSipYears">-</div>
+                        <div class="lbl">Investment Phase</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val" id="rSwpYears">-</div>
+                        <div class="lbl">Withdrawal Phase</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-section">
+            <div class="schedule-tabs">
+                <div class="schedule-tab active" data-tab="chart">Growth Chart</div>
+                <div class="schedule-tab" data-tab="sip">SIP Schedule</div>
+                <div class="schedule-tab" data-tab="swp">SWP Schedule</div>
+            </div>
+            <div class="schedule-content active" id="tab-chart">
+                <div class="chart-section">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            <div class="schedule-content" id="tab-sip">
+                <div class="table-wrap">
+                    <table id="sipTable">
+                        <thead><tr><th>Year</th><th>Monthly SIP</th><th>Yearly Investment</th><th>Corpus</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="schedule-content" id="tab-swp">
+                <div class="table-wrap">
+                    <table id="swpTable">
+                        <thead><tr><th>Year</th><th>Monthly Withdrawal</th><th>Yearly Withdrawal</th><th>Corpus Start</th><th>Corpus End</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-note">Returns compounded monthly. For illustration purposes only. Actual returns may vary. Consult a financial advisor.</p>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        function fmt(n) {
+            n = Math.round(n);
+            if (n >= 10000000) return '₹' + (n/10000000).toFixed(2) + ' Cr';
+            if (n >= 100000) return '₹' + (n/100000).toFixed(2) + ' L';
+            if (n < 0) return '-' + fmt(Math.abs(n));
+            return '₹' + n.toLocaleString('en-IN');
+        }
+
+        function fmtShort(n) {
+            n = Math.round(n);
+            if (Math.abs(n) >= 10000000) return '₹' + (n/10000000).toFixed(1) + 'Cr';
+            if (Math.abs(n) >= 100000) return '₹' + (n/100000).toFixed(1) + 'L';
+            if (n < 0) return '-' + fmtShort(Math.abs(n));
+            return '₹' + n.toLocaleString('en-IN');
+        }
+
+        function val(id) { return parseFloat(document.getElementById(id).value); }
+
+        function calculate() {
+            var monthlyGoal = val('monthlyGoal');
+            var goalStartYear = val('goalStartYear');
+            var currentYear = new Date().getFullYear();
+            var inflationRate = val('inflationRate') / 100;
+            var sipReturnRate = val('sipReturnRate') / 100;
+            var swpReturnRate = val('swpReturnRate') / 100;
+            var swpDurationYears = val('swpDurationYears');
+            var existingCorpus = val('existingCorpus');
+            var annualStepUp = val('annualStepUp') / 100;
+
+            var yearsToGoal = goalStartYear - currentYear;
+            if (yearsToGoal <= 0) return null;
+
+            var inflationAdjustedGoal = monthlyGoal * Math.pow(1 + inflationRate, yearsToGoal);
+
+            var monthlySwpReturn = swpReturnRate / 12;
+            var pvOfWithdrawals = 0;
+            for (var yr = 0; yr < swpDurationYears; yr++) {
+                var yearlyMonthlyWithdrawal = inflationAdjustedGoal * Math.pow(1 + inflationRate, yr);
+                for (var mo = 0; mo < 12; mo++) {
+                    var totalMonth = yr * 12 + mo;
+                    pvOfWithdrawals += yearlyMonthlyWithdrawal / Math.pow(1 + monthlySwpReturn, totalMonth);
+                }
+            }
+            var requiredCorpus = pvOfWithdrawals;
+
+            var futureValueExisting = existingCorpus * Math.pow(1 + sipReturnRate / 12, yearsToGoal * 12);
+            var corpusFromSip = Math.max(0, requiredCorpus - futureValueExisting);
+
+            var monthlySipReturn = sipReturnRate / 12;
+            var monthlySip;
+
+            if (annualStepUp === 0) {
+                var fvFactor = (Math.pow(1 + monthlySipReturn, yearsToGoal * 12) - 1) / monthlySipReturn;
+                monthlySip = corpusFromSip / (fvFactor * (1 + monthlySipReturn));
+            } else {
+                var totalFvPerUnit = 0;
+                for (var y = 0; y < yearsToGoal; y++) {
+                    var stepMult = Math.pow(1 + annualStepUp, y);
+                    var monthsRemStart = (yearsToGoal - y) * 12;
+                    var yearFv = 0;
+                    for (var m = 0; m < 12; m++) {
+                        var monthsToCompound = monthsRemStart - m - 1;
+                        yearFv += monthsToCompound >= 0 ? Math.pow(1 + monthlySipReturn, monthsToCompound) : 1;
+                    }
+                    totalFvPerUnit += stepMult * yearFv;
+                }
+                monthlySip = corpusFromSip / totalFvPerUnit;
+            }
+
+            var sipSchedule = [];
+            var corpusGrowth = [];
+            var runningCorpus = existingCorpus;
+            for (var y = 0; y < yearsToGoal; y++) {
+                var yearSip = monthlySip * Math.pow(1 + annualStepUp, y);
+                for (var m = 0; m < 12; m++) {
+                    runningCorpus = runningCorpus * (1 + monthlySipReturn) + yearSip;
+                }
+                sipSchedule.push({ year: currentYear + y + 1, monthlySip: Math.round(yearSip), yearlyInvestment: Math.round(yearSip * 12) });
+                corpusGrowth.push({ year: currentYear + y + 1, corpus: Math.round(runningCorpus) });
+            }
+
+            var swpCorpus = runningCorpus;
+            var swpSchedule = [];
+            for (var y = 0; y < swpDurationYears; y++) {
+                var yearlyWithdrawal = inflationAdjustedGoal * Math.pow(1 + inflationRate, y);
+                var yearStart = swpCorpus;
+                for (var m = 0; m < 12; m++) {
+                    swpCorpus = swpCorpus * (1 + monthlySwpReturn) - yearlyWithdrawal;
+                }
+                swpSchedule.push({ year: goalStartYear + y, monthlyWithdrawal: Math.round(yearlyWithdrawal), yearlyWithdrawal: Math.round(yearlyWithdrawal * 12), corpusStart: Math.round(yearStart), corpusEnd: Math.round(swpCorpus) });
+            }
+
+            var totalInvested = sipSchedule.reduce(function(s, r) { return s + r.yearlyInvestment; }, 0) + existingCorpus;
+            var totalWithdrawn = swpSchedule.reduce(function(s, r) { return s + r.yearlyWithdrawal; }, 0);
+
+            return {
+                inflationAdjustedGoal: Math.round(inflationAdjustedGoal),
+                requiredCorpus: Math.round(requiredCorpus),
+                monthlySipStarting: Math.round(monthlySip),
+                totalInvested: Math.round(totalInvested),
+                totalWithdrawn: Math.round(totalWithdrawn),
+                wealthMultiplier: totalInvested > 0 ? (totalWithdrawn / totalInvested).toFixed(2) : 0,
+                yearsToGoal: yearsToGoal,
+                swpDurationYears: swpDurationYears,
+                sipSchedule: sipSchedule,
+                swpSchedule: swpSchedule,
+                corpusGrowth: corpusGrowth
+            };
+        }
+
+        var lastData = null;
+        var debounceTimer;
+
+        function recalc() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(doRecalc, 30);
+        }
+
+        function doRecalc() {
+            document.getElementById('disp-monthlyGoal').textContent = fmt(val('monthlyGoal'));
+            document.getElementById('disp-goalStartYear').textContent = val('goalStartYear');
+            document.getElementById('disp-swpDuration').textContent = val('swpDurationYears') + ' yrs';
+            document.getElementById('disp-existingCorpus').textContent = fmt(val('existingCorpus'));
+            document.getElementById('disp-inflation').textContent = val('inflationRate') + '%';
+            document.getElementById('disp-sipReturn').textContent = val('sipReturnRate') + '%';
+            document.getElementById('disp-swpReturn').textContent = val('swpReturnRate') + '%';
+            document.getElementById('disp-stepUp').textContent = val('annualStepUp') + '%';
+            document.getElementById('stepUpPct').textContent = val('annualStepUp');
+
+            var d = calculate();
+            if (!d) return;
+            lastData = d;
+
+            document.getElementById('resultSip').textContent = fmt(d.monthlySipStarting) + '/mo';
+            document.getElementById('donutCenter').textContent = fmt(d.requiredCorpus);
+            document.getElementById('rInvested').textContent = fmt(d.totalInvested);
+            document.getElementById('rGain').textContent = fmt(d.requiredCorpus - d.totalInvested);
+            document.getElementById('rWithdrawn').textContent = fmt(d.totalWithdrawn);
+            document.getElementById('rInflGoal').textContent = fmt(d.inflationAdjustedGoal);
+            document.getElementById('rMultiplier').textContent = d.wealthMultiplier + 'x';
+            document.getElementById('rSipYears').textContent = d.yearsToGoal + ' years';
+            document.getElementById('rSwpYears').textContent = d.swpDurationYears + ' years';
+
+            drawDonut(d.totalInvested, Math.max(0, d.requiredCorpus - d.totalInvested));
+            drawLineChart(d);
+            fillTables(d);
+        }
+
+        function drawDonut(invested, gain) {
+            var canvas = document.getElementById('donutChart');
+            var ctx = canvas.getContext('2d');
+            var w = canvas.width, h = canvas.height;
+            var cx = w/2, cy = h/2, r = 80, thickness = 20;
+            ctx.clearRect(0, 0, w, h);
+
+            var total = invested + gain;
+            if (total <= 0) return;
+
+            var slices = [
+                { val: invested, color: '#00d09c' },
+                { val: gain, color: '#5367ff' }
+            ];
+
+            var startAngle = -Math.PI / 2;
+            slices.forEach(function(s) {
+                var sweep = (s.val / total) * Math.PI * 2;
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, startAngle, startAngle + sweep);
+                ctx.arc(cx, cy, r - thickness, startAngle + sweep, startAngle, true);
+                ctx.closePath();
+                ctx.fillStyle = s.color;
+                ctx.fill();
+                startAngle += sweep;
+            });
+        }
+
+        function drawLineChart(data) {
+            var canvas = document.getElementById('lineChart');
+            var container = canvas.parentElement;
+            var dpr = window.devicePixelRatio || 1;
+            var displayWidth = container.offsetWidth;
+            var displayHeight = 250;
+            canvas.style.width = displayWidth + 'px';
+            canvas.style.height = displayHeight + 'px';
+            canvas.width = displayWidth * dpr;
+            canvas.height = displayHeight * dpr;
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            var sipData = data.corpusGrowth.map(function(d) { return {year: d.year, value: d.corpus}; });
+            var swpData = data.swpSchedule.map(function(d) { return {year: d.year, value: d.corpusStart}; });
+            var lastSwp = data.swpSchedule[data.swpSchedule.length-1];
+            swpData.push({year: lastSwp.year+1, value: lastSwp.corpusEnd});
+
+            var allData = sipData.concat(swpData);
+            var maxVal = Math.max.apply(null, allData.map(function(d){return d.value;}));
+            var minVal = Math.min.apply(null, allData.map(function(d){return d.value;}).concat([0]));
+
+            var pad = {top: 25, right: 20, bottom: 30, left: 55};
+            var w = displayWidth - pad.left - pad.right;
+            var h = displayHeight - pad.top - pad.bottom;
+
+            ctx.clearRect(0, 0, displayWidth, displayHeight);
+
+            function x(i) { return pad.left + (i / (allData.length-1)) * w; }
+            function y(v) { return pad.top + h - ((v - minVal) / (maxVal - minVal)) * h; }
+
+            ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 1;
+            for (var i = 0; i <= 4; i++) {
+                var yy = pad.top + (i/4)*h;
+                ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(pad.left+w, yy); ctx.stroke();
+                ctx.fillStyle = '#aaa'; ctx.font = '10px system-ui'; ctx.textAlign = 'right';
+                ctx.fillText(fmtShort(maxVal - (i/4)*(maxVal-minVal)), pad.left-6, yy+3);
+            }
+
+            // SIP area
+            ctx.beginPath();
+            ctx.moveTo(x(0), y(0));
+            sipData.forEach(function(d, i) { ctx.lineTo(x(i), y(d.value)); });
+            ctx.lineTo(x(sipData.length-1), y(0));
+            ctx.closePath();
+            var g1 = ctx.createLinearGradient(0, pad.top, 0, pad.top+h);
+            g1.addColorStop(0, 'rgba(0,208,156,0.2)'); g1.addColorStop(1, 'rgba(0,208,156,0.01)');
+            ctx.fillStyle = g1; ctx.fill();
+
+            ctx.beginPath();
+            sipData.forEach(function(d, i) { i===0 ? ctx.moveTo(x(i), y(d.value)) : ctx.lineTo(x(i), y(d.value)); });
+            ctx.strokeStyle = '#00d09c'; ctx.lineWidth = 2.5; ctx.stroke();
+
+            // SWP area
+            var off = sipData.length;
+            ctx.beginPath();
+            ctx.moveTo(x(off-1), y(swpData[0].value));
+            swpData.forEach(function(d, i) { ctx.lineTo(x(off-1+i), y(d.value)); });
+            ctx.lineTo(x(off-1+swpData.length-1), y(0));
+            ctx.lineTo(x(off-1), y(0));
+            ctx.closePath();
+            var g2 = ctx.createLinearGradient(0, pad.top, 0, pad.top+h);
+            g2.addColorStop(0, 'rgba(255,138,0,0.2)'); g2.addColorStop(1, 'rgba(255,138,0,0.01)');
+            ctx.fillStyle = g2; ctx.fill();
+
+            ctx.beginPath();
+            swpData.forEach(function(d, i) { i===0 ? ctx.moveTo(x(off-1+i), y(d.value)) : ctx.lineTo(x(off-1+i), y(d.value)); });
+            ctx.strokeStyle = '#ff8a00'; ctx.lineWidth = 2.5; ctx.stroke();
+
+            // X labels
+            ctx.fillStyle = '#aaa'; ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+            var step = Math.max(1, Math.floor(allData.length/7));
+            for (var i = 0; i < allData.length; i += step) {
+                ctx.fillText(allData[i].year, x(i), displayHeight - 8);
+            }
+
+            // Legend
+            ctx.font = '11px system-ui'; ctx.textAlign = 'left';
+            ctx.fillStyle = '#00d09c'; ctx.fillRect(pad.left+5, 6, 10, 10);
+            ctx.fillStyle = '#555'; ctx.fillText('SIP (Accumulation)', pad.left+20, 14);
+            ctx.fillStyle = '#ff8a00'; ctx.fillRect(pad.left+160, 6, 10, 10);
+            ctx.fillStyle = '#555'; ctx.fillText('SWP (Withdrawal)', pad.left+175, 14);
+        }
+
+        function fillTables(data) {
+            var sipBody = document.querySelector('#sipTable tbody');
+            sipBody.innerHTML = data.sipSchedule.map(function(r, i) {
+                return '<tr><td>'+r.year+'</td><td>'+fmt(r.monthlySip)+'</td><td>'+fmt(r.yearlyInvestment)+'</td><td>'+fmt(data.corpusGrowth[i].corpus)+'</td></tr>';
+            }).join('');
+
+            var swpBody = document.querySelector('#swpTable tbody');
+            swpBody.innerHTML = data.swpSchedule.map(function(r) {
+                var endColor = r.corpusEnd < 0 ? '#e53e3e' : '#00d09c';
+                return '<tr><td>'+r.year+'</td><td>'+fmt(r.monthlyWithdrawal)+'</td><td>'+fmt(r.yearlyWithdrawal)+'</td><td>'+fmt(r.corpusStart)+'</td><td style="color:'+endColor+'">'+fmt(r.corpusEnd)+'</td></tr>';
+            }).join('');
+        }
+
+        // Tabs
+        document.querySelectorAll('.schedule-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.schedule-tab').forEach(function(t){t.classList.remove('active');});
+                document.querySelectorAll('.schedule-content').forEach(function(t){t.classList.remove('active');});
+                tab.classList.add('active');
+                document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+                if (tab.dataset.tab === 'chart' && lastData) {
+                    setTimeout(function() { drawLineChart(lastData); }, 50);
+                }
+            });
+        });
+
+        window.addEventListener('resize', function() { if (lastData) drawLineChart(lastData); });
+        window.recalc = recalc;
+
+        recalc();
+    })();
+    </script>
+</body>
+</html>
