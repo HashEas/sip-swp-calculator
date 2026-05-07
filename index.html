@@ -11,7 +11,7 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#5367ff">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect rx='20' width='100' height='100' fill='%235367ff'/><text x='50' y='68' font-size='45' text-anchor='middle' fill='white' font-family='system-ui' font-weight='bold'>SP</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%235367ff'/><stop offset='100%25' style='stop-color:%2300d09c'/></linearGradient></defs><rect rx='20' width='100' height='100' fill='url(%23g)'/><text x='50' y='72' font-size='55' text-anchor='middle' fill='white' font-family='system-ui' font-weight='800'>#</text></svg>">
     <link rel="manifest" href="manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,25 +25,27 @@
         .header {
             background: #fff;
             border-bottom: 1px solid #e8e8e8;
-            padding: 16px 32px;
+            padding: 10px 24px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             position: sticky;
             top: 0;
             z-index: 100;
         }
         .header-icon {
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             background: linear-gradient(135deg, #5367ff, #00d09c);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            color: #fff; font-weight: 700; font-size: 14px;
+            color: #fff; font-weight: 800; font-size: 20px;
+            box-shadow: 0 2px 8px rgba(83,103,255,0.3);
+            letter-spacing: -1px;
         }
         .header h1 { font-size: 1.1rem; font-weight: 600; color: #1f1f2e; }
         .header p { font-size: 0.78rem; color: #777; margin-top: 1px; }
 
-        .main { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+        .main { max-width: 1100px; margin: 12px auto; padding: 0 16px; }
 
         .calculator {
             background: #fff;
@@ -51,23 +53,31 @@
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
             display: grid;
             grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 80px);
             overflow: hidden;
         }
 
         .inputs-panel {
-            padding: 28px 28px 20px;
+            padding: 16px 20px 12px;
             border-right: 1px solid #f0f0f0;
-            max-height: 80vh;
             overflow-y: auto;
+            scrollbar-width: none;
         }
-        .results-panel { padding: 28px; background: #fafbff; }
+        .inputs-panel::-webkit-scrollbar { display: none; }
+        .results-panel {
+            padding: 16px 20px;
+            background: #fafbff;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .results-panel::-webkit-scrollbar { display: none; }
 
-        .slider-group { margin-bottom: 20px; }
+        .slider-group { margin-bottom: 10px; }
         .slider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
         .slider-label { font-size: 0.82rem; color: #555; font-weight: 500; }
         .slider-value-box {
@@ -121,19 +131,19 @@
         .slider-range {
             display: flex;
             justify-content: space-between;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #bbb;
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
         .section-title {
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #aaa;
-            margin-bottom: 14px;
-            margin-top: 6px;
-            padding-bottom: 6px;
+            margin-bottom: 8px;
+            margin-top: 2px;
+            padding-bottom: 3px;
             border-bottom: 1px solid #f0f0f0;
             font-weight: 600;
         }
@@ -141,7 +151,7 @@
         .donut-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             position: relative;
         }
         .donut-center {
@@ -150,42 +160,42 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
-        .donut-center .amount { font-size: 1.1rem; font-weight: 700; color: #1f1f2e; }
-        .donut-center .label { font-size: 0.68rem; color: #999; }
+        .donut-center .amount { font-size: 1.15rem; font-weight: 800; color: #1f1f2e; }
+        .donut-center .label { font-size: 0.65rem; color: #777; font-weight: 500; }
 
-        .result-items { display: flex; flex-direction: column; gap: 12px; }
-        .result-item { display: flex; align-items: center; gap: 10px; }
+        .result-items { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+        .result-item { display: flex; align-items: center; gap: 8px; }
         .result-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .result-info { flex: 1; }
-        .result-info .label { font-size: 0.75rem; color: #777; }
+        .result-info .label { font-size: 0.7rem; color: #777; }
         .result-info .value { font-size: 0.95rem; font-weight: 600; color: #1f1f2e; }
 
-        .divider { height: 1px; background: #f0f0f0; margin: 18px 0; }
+        .divider { height: 1px; background: #f0f0f0; margin: 10px 0; }
 
         .highlight-card {
             background: linear-gradient(135deg, #5367ff, #00d09c);
             border-radius: 12px;
-            padding: 18px;
+            padding: 14px;
             color: #fff;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
-        .highlight-card .big { font-size: 1.6rem; font-weight: 700; }
-        .highlight-card .sub { font-size: 0.75rem; opacity: 0.9; margin-top: 3px; }
+        .highlight-card .big { font-size: 1.7rem; font-weight: 700; }
+        .highlight-card .sub { font-size: 0.72rem; opacity: 0.9; margin-top: 2px; }
 
         .stats-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-top: 14px;
+            margin-top: 12px;
         }
         .stat-box {
             background: #f8f9ff;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 12px;
             text-align: center;
         }
-        .stat-box .val { font-size: 0.9rem; font-weight: 700; color: #5367ff; }
+        .stat-box .val { font-size: 0.95rem; font-weight: 700; color: #5367ff; }
         .stat-box .lbl { font-size: 0.65rem; color: #888; margin-top: 2px; }
 
         .schedule-section {
@@ -223,6 +233,8 @@
         td { padding: 8px 10px; border-bottom: 1px solid #f8f8f8; color: #444; }
         tr:hover td { background: #fafbff; }
         .table-wrap { max-height: 400px; overflow-y: auto; }
+        .cell-sub-inline { font-size: 0.65rem; color: #999; margin-left: 4px; }
+        .cell-sub-inline .red { color: #e53e3e; }
 
         .chart-section { padding: 16px; }
         .chart-section canvas { width: 100%; height: 220px; }
@@ -232,18 +244,215 @@
             color: #aaa; margin-top: 20px; padding: 12px;
         }
 
+        /* Toggle switch */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .toggle-label { display: flex; flex-direction: column; }
+        .toggle-label span:first-child { font-size: 0.82rem; color: #555; font-weight: 500; }
+        .toggle-hint { font-size: 0.7rem; color: #aaa; margin-top: 2px; }
+        .toggle-switch {
+            position: relative;
+            width: 42px; height: 22px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; inset: 0;
+            background: #e0e0e0;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            left: 3px; bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: #5367ff; }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        /* Warning bar */
+        .warning-bar {
+            background: #fff8e6;
+            border: 1px solid #ffd666;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            color: #8a6d00;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .warning-icon {
+            width: 18px; height: 18px;
+            background: #ffd666;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; color: #8a6d00;
+            flex-shrink: 0;
+        }
+
+
+        .tax-disclaimer {
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* Floating Guide Button */
+        .guide-fab {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, #5367ff, #00d09c);
+            border-radius: 50%;
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(83,103,255,0.4);
+            z-index: 1000;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .guide-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(83,103,255,0.5); }
+        .guide-fab .pulse {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: rgba(83,103,255,0.3);
+            animation: fabPulse 2s infinite;
+        }
+        @keyframes fabPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Modal Overlay */
+        .guide-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .guide-modal.open { display: flex; }
+        .guide-modal-box {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 85vh;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .guide-close {
+            position: absolute;
+            top: 14px; right: 14px;
+            width: 32px; height: 32px;
+            background: #f0f0f0;
+            border: none; border-radius: 50%;
+            font-size: 1.1rem; color: #666;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        .guide-close:hover { background: #e0e0e0; }
+
+        /* Carousel */
+        .carousel { overflow: hidden; }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.25,0.8,0.25,1);
+        }
+        .carousel-slide {
+            min-width: 100%;
+            padding: 40px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .slide-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+        .slide-icon.green { background: #e6faf4; }
+        .slide-icon.blue { background: #eef0ff; }
+        .slide-icon.orange { background: #fff5eb; }
+        .slide-icon.purple { background: #f5eeff; }
+        .carousel-slide h3 { font-size: 1.1rem; color: #1f1f2e; margin-bottom: 10px; }
+        .carousel-slide p { font-size: 0.85rem; color: #666; line-height: 1.6; max-width: 380px; }
+        .carousel-slide .example {
+            background: #f8f9ff; border-radius: 10px; padding: 12px 16px;
+            font-size: 0.8rem; color: #555; margin-top: 12px; text-align: left;
+            width: 100%;
+        }
+        .carousel-slide .example strong { color: #5367ff; }
+
+        /* Carousel Controls */
+        .carousel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .carousel-dots { display: flex; gap: 6px; }
+        .carousel-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.3s;
+        }
+        .carousel-dot.active { background: #5367ff; width: 20px; border-radius: 4px; }
+        .carousel-btn {
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .carousel-btn.prev { background: #f0f0f0; color: #666; }
+        .carousel-btn.prev:hover { background: #e0e0e0; }
+        .carousel-btn.next { background: #5367ff; color: #fff; }
+        .carousel-btn.next:hover { background: #4255e0; }
+
+
         @media (max-width: 768px) {
-            .calculator { grid-template-columns: 1fr; }
-            .inputs-panel { max-height: none; border-right: none; border-bottom: 1px solid #f0f0f0; }
+            .calculator { grid-template-columns: 1fr; height: auto; }
+            .inputs-panel { border-right: none; border-bottom: 1px solid #f0f0f0; }
             .header { padding: 12px 16px; }
             .header h1 { font-size: 0.95rem; }
             .highlight-card .big { font-size: 1.3rem; }
+            .terms-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-icon">SP</div>
+        <div class="header-icon">#</div>
         <div>
             <h1>SIP + SWP Goal Planner</h1>
             <p>How much to invest monthly to achieve your future income goal</p>
@@ -269,7 +478,7 @@
                         <span class="slider-label">Goal Start Year</span>
                         <span class="slider-value-box blue" id="disp-goalStartYear"></span>
                     </div>
-                    <input type="range" id="goalStartYear" min="2030" max="2060" step="1" value="2045" oninput="recalc()">
+                    <input type="range" id="goalStartYear" min="2030" max="2060" step="1" value="2050" oninput="recalc()">
                     <div class="slider-range"><span>2030</span><span>2060</span></div>
                 </div>
 
@@ -278,7 +487,7 @@
                         <span class="slider-label">Withdrawal Duration</span>
                         <span class="slider-value-box orange" id="disp-swpDuration"></span>
                     </div>
-                    <input type="range" class="orange" id="swpDurationYears" min="5" max="40" step="1" value="25" oninput="recalc()">
+                    <input type="range" class="orange" id="swpDurationYears" min="5" max="40" step="1" value="20" oninput="recalc()">
                     <div class="slider-range"><span>5 yrs</span><span>40 yrs</span></div>
                 </div>
 
@@ -298,7 +507,7 @@
                         <span class="slider-label">Inflation Rate</span>
                         <span class="slider-value-box" id="disp-inflation"></span>
                     </div>
-                    <input type="range" class="green" id="inflationRate" min="3" max="12" step="0.5" value="6" oninput="recalc()">
+                    <input type="range" class="green" id="inflationRate" min="3" max="12" step="0.5" value="7" oninput="recalc()">
                     <div class="slider-range"><span>3%</span><span>12%</span></div>
                 </div>
 
@@ -328,16 +537,21 @@
                     <input type="range" class="purple" id="annualStepUp" min="0" max="30" step="1" value="10" oninput="recalc()">
                     <div class="slider-range"><span>0%</span><span>30%</span></div>
                 </div>
+
             </div>
 
             <div class="results-panel">
                 <div class="highlight-card">
                     <div class="big" id="resultSip">-</div>
-                    <div class="sub">Start Monthly SIP (increases <span id="stepUpPct">10</span>% every year)</div>
+                    <div class="sub">Start Monthly SIP (increases <span id="stepUpPct">10</span>% every year, capped at 3x)</div>
+                </div>
+                <div class="warning-bar" id="sipCapWarning" style="display:none;">
+                    <span class="warning-icon">!</span>
+                    <span>Step-up capped at 3x of initial SIP (<strong id="sipCapVal">-</strong>/mo) to keep it realistic</span>
                 </div>
 
                 <div class="donut-container">
-                    <canvas id="donutChart" width="200" height="200"></canvas>
+                    <canvas id="donutChart" width="180" height="180"></canvas>
                     <div class="donut-center">
                         <div class="amount" id="donutCenter">-</div>
                         <div class="label">Corpus Needed</div>
@@ -388,6 +602,18 @@
                         <div class="lbl">Withdrawal Phase</div>
                     </div>
                 </div>
+
+                <div class="divider"></div>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <span>Post-tax withdrawals</span>
+                    </label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="taxToggle" onchange="recalc()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="tax-disclaimer">Assumes 12.5% LTCG on ~65% equity gains portion. Actual tax varies by holding period, cost basis, and ₹1.25L annual exemption.</div>
             </div>
         </div>
 
@@ -413,14 +639,66 @@
             <div class="schedule-content" id="tab-swp">
                 <div class="table-wrap">
                     <table id="swpTable">
-                        <thead><tr><th>Year</th><th>Monthly Withdrawal</th><th>Yearly Withdrawal</th><th>Corpus Start</th><th>Corpus End</th></tr></thead>
+                        <thead id="swpTableHead"><tr><th>Year</th><th>Monthly Withdrawal</th><th>Yearly</th><th>Corpus Start</th><th>Corpus End</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <p class="footer-note">Returns compounded monthly. For illustration purposes only. Actual returns may vary. Consult a financial advisor.</p>
+        <!-- Floating Guide Button -->
+        <button class="guide-fab" onclick="openGuide()" aria-label="How it works">
+            <span class="pulse"></span>
+            ?
+        </button>
+
+        <!-- Guide Modal with Carousel -->
+        <div class="guide-modal" id="guideModal" onclick="if(event.target===this)closeGuide()">
+            <div class="guide-modal-box">
+                <button class="guide-close" onclick="closeGuide()">&times;</button>
+                <div class="carousel">
+                    <div class="carousel-track" id="carouselTrack">
+                        <div class="carousel-slide">
+                            <div class="slide-icon green">&#127919;</div>
+                            <h3>Set Your Income Goal</h3>
+                            <p>How much monthly income do you want in retirement? Enter it in <strong>today's value</strong> — the calculator handles the rest.</p>
+                            <div class="example"><strong>Example:</strong> You want ₹1 lakh/month. That's your goal in today's money.</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="slide-icon orange">&#128200;</div>
+                            <h3>Inflation Does the Math</h3>
+                            <p>₹1 lakh today won't buy the same things in 2050. At 7% inflation, you'll actually need <strong>~₹5.1 lakh/month</strong> to maintain the same lifestyle.</p>
+                            <div class="example"><strong>Rule of thumb:</strong> Money roughly doubles every 10 years at 7% inflation.</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="slide-icon blue">&#127974;</div>
+                            <h3>Building the Corpus</h3>
+                            <p>To withdraw income for 25 years (that also grows with inflation!), you need a large corpus. The calculator finds exactly how much using SWP math.</p>
+                            <div class="example"><strong>For ₹1L goal:</strong> You'll need ~₹10.5 Cr by 2050 to sustain 20 years of inflation-adjusted withdrawals.</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="slide-icon purple">&#128176;</div>
+                            <h3>Your Monthly SIP</h3>
+                            <p>Now the magic — how much to invest monthly? With <strong>annual step-up</strong> (SIP increases yearly like your salary), the starting amount is surprisingly achievable.</p>
+                            <div class="example"><strong>Result:</strong> Start at ~₹35K/month, increase 10%/year (capped at 3x). Total invested: ~₹2.4 Cr. Total withdrawn: ~₹25 Cr. That's ~10x!</div>
+                        </div>
+                        <div class="carousel-slide">
+                            <div class="slide-icon green">&#128161;</div>
+                            <h3>Key Concepts</h3>
+                            <p><strong>SIP</strong> = Invest fixed amount monthly (accumulate)<br><strong>SWP</strong> = Withdraw fixed amount monthly (spend)<br><strong>Step-up</strong> = Increase SIP yearly (realistic)<br><strong>Wealth Multiplier</strong> = Withdrawn / Invested (compounding power)</p>
+                            <div class="example"><strong>Pro tip:</strong> Start early! Even 3 extra years can mean 30-40% less monthly SIP needed.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-footer">
+                    <button class="carousel-btn prev" id="prevBtn" onclick="prevSlide()">Back</button>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                    <button class="carousel-btn next" id="nextBtn" onclick="nextSlide()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <p class="footer-note">This is an illustrative tool, not financial advice. Consult a SEBI-registered advisor for personalized planning.</p>
     </div>
 
     <script>
@@ -478,13 +756,16 @@
             var monthlySipReturn = sipReturnRate / 12;
             var monthlySip;
 
+            var sipCapMultiplier = 3;
+
             if (annualStepUp === 0) {
                 var fvFactor = (Math.pow(1 + monthlySipReturn, yearsToGoal * 12) - 1) / monthlySipReturn;
                 monthlySip = corpusFromSip / (fvFactor * (1 + monthlySipReturn));
             } else {
+                // Two-pass: first estimate without cap, then apply cap and recalculate
                 var totalFvPerUnit = 0;
                 for (var y = 0; y < yearsToGoal; y++) {
-                    var stepMult = Math.pow(1 + annualStepUp, y);
+                    var stepMult = Math.min(Math.pow(1 + annualStepUp, y), sipCapMultiplier);
                     var monthsRemStart = (yearsToGoal - y) * 12;
                     var yearFv = 0;
                     for (var m = 0; m < 12; m++) {
@@ -499,8 +780,11 @@
             var sipSchedule = [];
             var corpusGrowth = [];
             var runningCorpus = existingCorpus;
+            var sipCapped = false;
             for (var y = 0; y < yearsToGoal; y++) {
-                var yearSip = monthlySip * Math.pow(1 + annualStepUp, y);
+                var rawSip = monthlySip * Math.pow(1 + annualStepUp, y);
+                var yearSip = Math.min(rawSip, monthlySip * sipCapMultiplier);
+                if (rawSip > monthlySip * sipCapMultiplier) sipCapped = true;
                 for (var m = 0; m < 12; m++) {
                     runningCorpus = runningCorpus * (1 + monthlySipReturn) + yearSip;
                 }
@@ -508,32 +792,46 @@
                 corpusGrowth.push({ year: currentYear + y + 1, corpus: Math.round(runningCorpus) });
             }
 
+            // Tax is display-only; corpus always uses gross withdrawal
+            var postTax = document.getElementById('taxToggle').checked;
+            var taxRate = 0.125; // 12.5% LTCG
+            var gainsRatio = 0.65; // ~65% of SWP withdrawal is gains after long holding
+            var effectiveTaxRate = taxRate * gainsRatio; // ~8.125% effective
+
             var swpCorpus = runningCorpus;
             var swpSchedule = [];
             for (var y = 0; y < swpDurationYears; y++) {
-                var yearlyWithdrawal = inflationAdjustedGoal * Math.pow(1 + inflationRate, y);
+                var grossWithdrawal = inflationAdjustedGoal * Math.pow(1 + inflationRate, y);
+                var tax = Math.round(grossWithdrawal * effectiveTaxRate);
+                var netWithdrawal = grossWithdrawal - tax;
                 var yearStart = swpCorpus;
                 for (var m = 0; m < 12; m++) {
-                    swpCorpus = swpCorpus * (1 + monthlySwpReturn) - yearlyWithdrawal;
+                    swpCorpus = swpCorpus * (1 + monthlySwpReturn) - grossWithdrawal;
                 }
-                swpSchedule.push({ year: goalStartYear + y, monthlyWithdrawal: Math.round(yearlyWithdrawal), yearlyWithdrawal: Math.round(yearlyWithdrawal * 12), corpusStart: Math.round(yearStart), corpusEnd: Math.round(swpCorpus) });
+                swpSchedule.push({ year: goalStartYear + y, grossWithdrawal: Math.round(grossWithdrawal), netWithdrawal: Math.round(netWithdrawal), tax: tax, yearlyGross: Math.round(grossWithdrawal * 12), yearlyNet: Math.round(netWithdrawal * 12), corpusStart: Math.round(yearStart), corpusEnd: Math.round(swpCorpus) });
             }
 
             var totalInvested = sipSchedule.reduce(function(s, r) { return s + r.yearlyInvestment; }, 0) + existingCorpus;
-            var totalWithdrawn = swpSchedule.reduce(function(s, r) { return s + r.yearlyWithdrawal; }, 0);
+            var totalWithdrawn = swpSchedule.reduce(function(s, r) { return s + (postTax ? r.yearlyNet : r.yearlyGross); }, 0);
+
+            var withdrawalRate = (inflationAdjustedGoal * 12) / runningCorpus * 100;
 
             return {
                 inflationAdjustedGoal: Math.round(inflationAdjustedGoal),
                 requiredCorpus: Math.round(requiredCorpus),
                 monthlySipStarting: Math.round(monthlySip),
+                sipCapAmount: Math.round(monthlySip * sipCapMultiplier),
+                sipCapped: sipCapped,
                 totalInvested: Math.round(totalInvested),
                 totalWithdrawn: Math.round(totalWithdrawn),
                 wealthMultiplier: totalInvested > 0 ? (totalWithdrawn / totalInvested).toFixed(2) : 0,
+                withdrawalRate: withdrawalRate.toFixed(1),
                 yearsToGoal: yearsToGoal,
                 swpDurationYears: swpDurationYears,
                 sipSchedule: sipSchedule,
                 swpSchedule: swpSchedule,
-                corpusGrowth: corpusGrowth
+                corpusGrowth: corpusGrowth,
+                postTax: postTax
             };
         }
 
@@ -570,6 +868,15 @@
             document.getElementById('rSipYears').textContent = d.yearsToGoal + ' years';
             document.getElementById('rSwpYears').textContent = d.swpDurationYears + ' years';
 
+            // SIP cap warning
+            if (d.sipCapped) {
+                document.getElementById('sipCapWarning').style.display = 'flex';
+                document.getElementById('sipCapVal').textContent = fmt(d.sipCapAmount);
+            } else {
+                document.getElementById('sipCapWarning').style.display = 'none';
+            }
+
+
             drawDonut(d.totalInvested, Math.max(0, d.requiredCorpus - d.totalInvested));
             drawLineChart(d);
             fillTables(d);
@@ -579,27 +886,47 @@
             var canvas = document.getElementById('donutChart');
             var ctx = canvas.getContext('2d');
             var w = canvas.width, h = canvas.height;
-            var cx = w/2, cy = h/2, r = 80, thickness = 20;
+            var cx = w/2, cy = h/2, r = 75, thickness = 22;
+            var gap = 0.03;
             ctx.clearRect(0, 0, w, h);
 
             var total = invested + gain;
             if (total <= 0) return;
 
+            // Outer shadow
+            ctx.save();
+            ctx.shadowColor = 'rgba(83,103,255,0.15)';
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetY = 4;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.arc(cx, cy, r - thickness, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(0,0,0,0.01)';
+            ctx.fill();
+            ctx.restore();
+
             var slices = [
-                { val: invested, color: '#00d09c' },
-                { val: gain, color: '#5367ff' }
+                { val: invested, color: '#00d09c', gradient: ['#00d09c', '#00b386'] },
+                { val: gain, color: '#5367ff', gradient: ['#5367ff', '#3a4fe0'] }
             ];
 
             var startAngle = -Math.PI / 2;
             slices.forEach(function(s) {
-                var sweep = (s.val / total) * Math.PI * 2;
+                var sweep = (s.val / total) * Math.PI * 2 - gap;
+                if (sweep < 0) sweep = 0;
+                var grad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+                grad.addColorStop(0, s.gradient[0]);
+                grad.addColorStop(1, s.gradient[1]);
+
                 ctx.beginPath();
-                ctx.arc(cx, cy, r, startAngle, startAngle + sweep);
-                ctx.arc(cx, cy, r - thickness, startAngle + sweep, startAngle, true);
+                ctx.arc(cx, cy, r, startAngle + gap/2, startAngle + sweep + gap/2);
+                ctx.arc(cx, cy, r - thickness, startAngle + sweep + gap/2, startAngle + gap/2, true);
                 ctx.closePath();
-                ctx.fillStyle = s.color;
+                ctx.fillStyle = grad;
                 ctx.fill();
-                startAngle += sweep;
+
+                startAngle += sweep + gap;
             });
         }
 
@@ -693,10 +1020,20 @@
                 return '<tr><td>'+r.year+'</td><td>'+fmt(r.monthlySip)+'</td><td>'+fmt(r.yearlyInvestment)+'</td><td>'+fmt(data.corpusGrowth[i].corpus)+'</td></tr>';
             }).join('');
 
+            var swpHead = document.getElementById('swpTableHead');
             var swpBody = document.querySelector('#swpTable tbody');
+            swpHead.innerHTML = '<tr><th>Year</th><th>Monthly Withdrawal</th><th>Yearly</th><th>Corpus Start</th><th>Corpus End</th></tr>';
             swpBody.innerHTML = data.swpSchedule.map(function(r) {
                 var endColor = r.corpusEnd < 0 ? '#e53e3e' : '#00d09c';
-                return '<tr><td>'+r.year+'</td><td>'+fmt(r.monthlyWithdrawal)+'</td><td>'+fmt(r.yearlyWithdrawal)+'</td><td>'+fmt(r.corpusStart)+'</td><td style="color:'+endColor+'">'+fmt(r.corpusEnd)+'</td></tr>';
+                var monthlyCell, yearlyCell;
+                if (data.postTax) {
+                    monthlyCell = '<td>'+fmt(r.netWithdrawal)+' <span class="cell-sub-inline">('+fmt(r.grossWithdrawal)+' - <span class="red">'+fmt(r.tax)+'</span>)</span></td>';
+                    yearlyCell = '<td>'+fmt(r.yearlyNet)+'</td>';
+                } else {
+                    monthlyCell = '<td>'+fmt(r.grossWithdrawal)+'</td>';
+                    yearlyCell = '<td>'+fmt(r.yearlyGross)+'</td>';
+                }
+                return '<tr><td>'+r.year+'</td>'+monthlyCell+yearlyCell+'<td>'+fmt(r.corpusStart)+'</td><td style="color:'+endColor+'">'+fmt(r.corpusEnd)+'</td></tr>';
             }).join('');
         }
 
@@ -718,6 +1055,60 @@
 
         recalc();
     })();
+
+    // Guide carousel
+    var currentSlide = 0;
+    var totalSlides = document.querySelectorAll('.carousel-slide').length;
+    var dotsContainer = document.getElementById('carouselDots');
+
+    for (var i = 0; i < totalSlides; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dotsContainer.appendChild(dot);
+    }
+
+    function updateCarousel() {
+        document.getElementById('carouselTrack').style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+        var dots = dotsContainer.children;
+        for (var i = 0; i < dots.length; i++) {
+            dots[i].className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
+        }
+        document.getElementById('prevBtn').style.visibility = currentSlide === 0 ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').textContent = currentSlide === totalSlides - 1 ? 'Got it!' : 'Next';
+    }
+
+    function nextSlide() {
+        if (currentSlide >= totalSlides - 1) { closeGuide(); return; }
+        currentSlide++;
+        updateCarousel();
+    }
+
+    function prevSlide() {
+        if (currentSlide <= 0) return;
+        currentSlide--;
+        updateCarousel();
+    }
+
+    function openGuide() {
+        currentSlide = 0;
+        updateCarousel();
+        document.getElementById('guideModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeGuide() {
+        document.getElementById('guideModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (!document.getElementById('guideModal').classList.contains('open')) return;
+        if (e.key === 'Escape') closeGuide();
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    updateCarousel();
     </script>
 </body>
 </html>
